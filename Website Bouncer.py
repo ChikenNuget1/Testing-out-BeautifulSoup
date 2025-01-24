@@ -36,14 +36,7 @@ def wikipedia_scraper(url, max=10, current=0):
 
     # Find all <a> within the bodyContent of the artical
     all_links = soup.find(id="bodyContent").find_all('a')
-    random.shuffle(all_links)
-    linktoscrape = 0
-    for link in all_links:
-        # Find <a> with <href> that contains 'wiki'
-        if link['href'].find('/wiki/') == -1:
-            continue
-        linktoscrape = link
-        break
+    linktoscrape = get_link_to_bounce(all_links)
     try:
         current += 1
         wikipedia_scraper("https://en.wikipedia.org" + linktoscrape['href'], max, current)
@@ -72,6 +65,15 @@ def lol_scraper(url, max=10, current=0):
     print(title.text)
 
     all_links = soup.find(id="content").find_all('a')
+    linktoscrape = get_link_to_bounce(all_links)
+    try: 
+        current += 1
+        lol_scraper("https://lol.fandom.com" + linktoscrape['href'], max, current)
+    except KeyError:
+        raise KeyError("wiaohioh")
+
+
+def get_link_to_bounce(all_links):
     random.shuffle(all_links)
     linktoscrape = 0
     
@@ -80,11 +82,7 @@ def lol_scraper(url, max=10, current=0):
             continue
         linktoscrape = link
         break
-    try: 
-        current += 1
-        lol_scraper("https://lol.fandom.com" + linktoscrape['href'], max, current)
-    except KeyError:
-        raise KeyError("wiaohioh")
+    return linktoscrape
 
 
 def all_link_scraper(url, max=10, current=0):
@@ -115,7 +113,6 @@ def all_link_scraper(url, max=10, current=0):
     
     for i in link_list:
         print(i[6:])
-
 
 
 def website_print():
